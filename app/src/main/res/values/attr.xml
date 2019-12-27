@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="YearPartyRollPlate">
+        <attr name="btnTittle" format="string|reference"/>
+        <attr name="innerRadius" format="dimension|reference"/>
+        <attr name="duration" format="integer|reference"/>
+        <attr name="itemCount" format="integer|reference"/>
+        <attr name="innerCircleColor" format="color|reference"/>
+        <attr name="outerCircleColor" format="color|reference"/>
+        <attr name="textSize" format="dimension|reference"/>
+
+    </declare-styleable>.
+</resources>
