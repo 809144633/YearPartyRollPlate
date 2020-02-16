@@ -187,6 +187,8 @@ public class YearPartyRollPlate extends View {
         return triPath;
     }
 
+    private ValueAnimator animator;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -201,7 +203,7 @@ public class YearPartyRollPlate extends View {
                 } while (endDegree % eachCount == 0);
 
                 int duration = (int) (10 * 1000 + Math.ceil(Math.random() * 5) * 1000);
-                ValueAnimator animator = ValueAnimator.ofFloat(0f, endDegree);
+                animator = ValueAnimator.ofFloat(0f, endDegree);
                 animator.setRepeatMode(ValueAnimator.RESTART);
                 animator.setDuration(duration);
                 animator.setInterpolator(new Interpolator() {
@@ -249,5 +251,14 @@ public class YearPartyRollPlate extends View {
 
     public void setPrizeListener(PrizeListener prizeListener) {
         this.prizeListener = prizeListener;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (animator != null) {
+            animator.cancel();
+            animator = null;
+        }
     }
 }
