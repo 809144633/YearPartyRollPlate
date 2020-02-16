@@ -33,6 +33,7 @@ public class YearPartyRollPlate extends View {
     private int endDegree;
     private float animValue;
     private PrizeListener prizeListener;
+    private RectF mRectF;
 
     public YearPartyRollPlate(Context context) {
         this(context, null);
@@ -112,26 +113,44 @@ public class YearPartyRollPlate extends View {
         super.onLayout(changed, left, top, right, bottom);
     }
 
+    private Path triPath;
+    float startAngle;
+    float sweepAngle;
+    float currentStartAngle;
+    float lineAngle;
+    float lineEndX;
+    float lineEndY;
+    int middleWidth = -1;
+    int middleHeight = -1;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int middleWidth = getMeasuredWidth() / 2;
-        int middleHeight = getMeasuredHeight() / 2;
-        RectF mRectF = new RectF(middleWidth - outerRadius, middleHeight - outerRadius, middleWidth + outerRadius, middleHeight + outerRadius);
+        if (middleWidth == -1) {
+            middleWidth = getMeasuredWidth() / 2;
+        }
+        if (middleHeight == -1) {
+            middleHeight = getMeasuredHeight() / 2;
+        }
+        if (mRectF == null) {
+            mRectF = new RectF(middleWidth - outerRadius, middleHeight - outerRadius, middleWidth + outerRadius, middleHeight + outerRadius);
+        }
+        if (triPath == null) {
+            triPath = initTriAngle(middleWidth, middleHeight);
+        }
 
-        Path triPath = initTriAngle(middleWidth, middleHeight);
         canvas.drawCircle(middleWidth, middleHeight, outerRadius, outPaint);
-        float startAngle = 0;
-        float sweepAngle = (float) (360.0 / itemCount);
+        startAngle = 0;
+        sweepAngle = (float) (360.0 / itemCount);
 
         for (int i = 0; i < itemCount; i++) {
             startAngle %= 360;
-            float currentStartAngle = startAngle + animValue * endDegree;
+            currentStartAngle = startAngle + animValue * endDegree;
             canvas.drawArc(mRectF, currentStartAngle, sweepAngle, true, paintList.get(i));
 
-            float lineAngle = currentStartAngle + sweepAngle / 2;
-            float lineEndX = (float) (middleWidth + (outerRadius / 1.5) * Math.cos(lineAngle / 180 * Math.PI));
-            float lineEndY = (float) (middleHeight + (outerRadius / 1.5) * Math.sin(lineAngle / 180 * Math.PI));
+            lineAngle = currentStartAngle + sweepAngle / 2;
+            lineEndX = (float) (middleWidth + (outerRadius / 1.5) * Math.cos(lineAngle / 180 * Math.PI));
+            lineEndY = (float) (middleHeight + (outerRadius / 1.5) * Math.sin(lineAngle / 180 * Math.PI));
             canvas.drawText(prizeList.get(i), lineEndX, lineEndY, textPaint);
             //动画结束
             if (animValue == 1) {
@@ -209,11 +228,12 @@ public class YearPartyRollPlate extends View {
 
     public int getRandomColor() {
         Random random = new Random();
+        int temp;
         int r = 0;
         int g = 0;
         int b = 0;
         for (int i = 0; i < 2; i++) {
-            int temp = random.nextInt(16);
+            temp = random.nextInt(16);
             r = r * 16 + temp;
             temp = random.nextInt(16);
             g = g * 16 + temp;
